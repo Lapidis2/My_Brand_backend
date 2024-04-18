@@ -15,7 +15,7 @@ export const register = async (req: Request, res: Response) => {
     if (InsertData) {
       const secrete: any = process.env.JWT_SECRETE;
       const token = jwt.sign({ data: InsertData }, "mysecretekey123", {
-        expiresIn: "60s",
+        expiresIn: "1 h",
       });
       res.status(201).json({ message: "register successfully", token: token });
     }
@@ -33,7 +33,7 @@ export const login = async (req: Request, res: Response) => {
       if (comparedPassword) {
         const secrete: any = process.env.JWT_SECRETE;
         const token = jwt.sign({ data: existUser }, "oursecretekey123", {
-          expiresIn: "600s",
+          expiresIn: "1 h",
         });
         res.status(200).json({ message: "login successfully", token: token });
       } else {

@@ -4,7 +4,8 @@ import mongoose from "mongoose";
 interface BlogModel{
     title:string,
     imageUrl: String ,
-    description:string
+    description:string,
+    createdAt: { type: Date }
    
 }
 

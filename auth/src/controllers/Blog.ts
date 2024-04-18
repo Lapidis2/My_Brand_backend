@@ -1,30 +1,21 @@
 import { Request, Response } from "express";
 import BlogModel from "../models/BlogModel";
 import {upload} from "../Multer/fileConfig";
-
+import cloudinary from 'cloudinary';
 //function for adding new blogs
-export const addBlog = async (req: Request, res: Response) => {
+export const addBlog= async (req:any, res:any) =>{
   try {
-    const { title, description } = req.body;
-    const userdata = (req as any).userdata;
+      const { title, description} = req.body;
+      const imagePath = req.file ? req.file.path : null;
+      let blogImage=''
+      if (req.file) {
+        // @ts-ignore
+          const result = await cloudinary.uploader.upload(req.file.path);
+          blogImage = result.secure_url; 
 
-    upload(req, res, async (err) => {
-      if (err) {
-        console.error("File upload error:", err);
-        return res.status(500).json({ message: 'File upload failed', error: err.message });
       }
 
-      const blogImage = req.file?.filename;
-      console.log("Uploaded File:", blogImage);
-
-      // if (!blogImage) {
-      //   return res.status(400).json({ message: 'No image provided' });
-      // }
-
-      if (userdata.data.email !== "hitapeter2@gmail.com") {
-        return res.status(403).json({ message: "This route is for Lapidis only" });
-      }
-
+      
       const newBlog = {
         title,
         imageUrl: blogImage,
@@ -33,39 +24,54 @@ export const addBlog = async (req: Request, res: Response) => {
        
       };
 
-      console.log("New Blog Data:", newBlog);
-
       const InsertData = await BlogModel.create(newBlog);
 
       if (InsertData) {
-        return res.status(201).json({ data: InsertData, userData: userdata });
+        return res.status(201).json({ data: InsertData, userData: InsertData });
       } else {
         throw new Error("Failed to create blog entry");
       }
-    });
 
-  } catch (error: any) {
-    console.error("Error adding blog:", error);
-    return res.status(500).json({ message: error.message });
+      
+  } catch (err) {
+      console.log('Error: ', err);
+      res.status(500).json({
+          message: "Internal Server Error!"
+      });
   }
 };
+
+
 //function for updating blog
 export const updateBlog=async(req:Request,res:Response) =>{
      const {blogId}=req.params;
-     const {title,description}=req.body;
+     const {title,description }=req.body;
+     let  imageUrl=''
+     if (req.file) {
+      // @ts-ignore
+        const result = await cloudinary.uploader.upload(req.file.path);
+        imageUrl = result.secure_url; 
+    }
+    console.log("debugging the issue for updating")
+
     try {
+    
         const updatedBlog = await BlogModel.findByIdAndUpdate(blogId, {title,description}, { new: true });
+        console.log("updated blog",updatedBlog)
+        console.log(req.body)
         if (!updatedBlog) {
           return res.status(404).json({ error: 'Blog not found' });
+         
       }
        res.send(updatedBlog)
     } catch (error) {
         console.error("Error updating blog:", error);
       res.status(500).json({error:'internal server error'})
     }
+    
 }
    
-// Function to get a blog by ID
+
     export const getBlogById =async(req:Request,res:Response)=> {
       const {blogId}=req.params;
     try {
@@ -82,7 +88,7 @@ export const getAllBlogs = async (req: Request, res: Response) => {
   
   try {
       const allBlogs = await BlogModel.find()
-          .select('title description')
+          .select('title description imageUrl')
           .exec();
       if (allBlogs.length >= 1) {
           res.status(200).json({
@@ -106,6 +112,7 @@ export const getAllBlogs = async (req: Request, res: Response) => {
 // Function to delete a blog by ID
 export const deleteBlog=async (req:Request,res:Response)=> {
   const {blogId}=req.params;
+  console.log(blogId)
     try {
         const deletedBlog = await BlogModel.findByIdAndDelete(blogId);
         if (!deletedBlog) {
