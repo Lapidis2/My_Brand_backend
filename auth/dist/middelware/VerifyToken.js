@@ -28,6 +28,9 @@ const jsonwebtoken_1 = __importStar(require("jsonwebtoken"));
 const verfiyToken = (req, res, next) => {
     const tokenRequest = req;
     const BearerToken = req.header('authorization');
+    if (typeof BearerToken === "undefined") {
+        return res.json({ message: "no token found" });
+    }
     const token = BearerToken.split(' ')[1];
     if (typeof token === "undefined") {
         res.json({ message: "no token found" });

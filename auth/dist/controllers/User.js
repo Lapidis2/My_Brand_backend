@@ -27,14 +27,14 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         if (InsertData) {
             const secrete = process.env.JWT_SECRETE;
-            const token = jsonwebtoken_1.default.sign({ data: InsertData }, "oursecretekey123", {
-                expiresIn: "30s",
+            const token = jsonwebtoken_1.default.sign({ data: InsertData }, "mysecretekey123", {
+                expiresIn: "1 h",
             });
-            res.json({ message: "register successfully", token: token });
+            res.status(201).json({ message: "register successfully", token: token });
         }
     }
     catch (error) {
-        res.json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 });
 exports.register = register;
@@ -47,20 +47,20 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             if (comparedPassword) {
                 const secrete = process.env.JWT_SECRETE;
                 const token = jsonwebtoken_1.default.sign({ data: existUser }, "oursecretekey123", {
-                    expiresIn: "30s",
+                    expiresIn: "1 h",
                 });
-                res.json({ message: "login suceessfully", token: token });
+                res.status(200).json({ message: "login successfully", token: token });
             }
             else {
-                res.json({ message: "Invalid email or password" });
+                res.status(401).json({ message: "Invalid email or password" });
             }
         }
         else {
-            res.json({ message: "Invalid email or password" });
+            res.status(401).json({ message: "Invalid email or password" });
         }
     }
     catch (error) {
-        res.json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 });
 exports.login = login;
