@@ -56,7 +56,7 @@ export const updateBlog=async(req:Request,res:Response) =>{
     
         const updatedBlog = await BlogModel.findByIdAndUpdate(blogId, {title,description}, { new: true });
         console.log("updated blog",updatedBlog)
-        console.log(req.body)
+      
         if (!updatedBlog) {
           return res.status(404).json({ error: 'Blog not found' });
          
