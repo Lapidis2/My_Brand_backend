@@ -3,6 +3,8 @@ import mongoose from "mongoose"
 import UserRoute from "./routes/User"
 import dotenv from "dotenv"
 import BlogRoute from "./routes/Blogs"
+import CommentRoutes from "./routes/comment"
+import like from "./routes/like"
 import cors from "cors"
 import cloudinary from 'cloudinary';
 const app = express()

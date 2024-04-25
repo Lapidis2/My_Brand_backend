@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import BlogModel from "../models/BlogModel";
 import {upload} from "../Multer/fileConfig";
-import cloudinary from 'cloudinary';
-//function for adding new blogs
+import cloudinary from 'cloudinary'
 export const addBlog= async (req:any, res:any) =>{
   try {
       const { title, description} = req.body;
@@ -17,8 +16,8 @@ export const addBlog= async (req:any, res:any) =>{
 
       
       const newBlog = {
-        title,
         imageUrl: blogImage,
+        title,
         description,
         createdAt: Date.now(),
        
@@ -40,13 +39,10 @@ export const addBlog= async (req:any, res:any) =>{
       });
   }
 };
-
-
-//function for updating blog
 export const updateBlog=async(req:Request,res:Response) =>{
      const {blogId}=req.params;
      const {title,description }=req.body;
-     let  imageUrl=''
+     let  imageUrl=""
      if (req.file) {
       // @ts-ignore
         const result = await cloudinary.uploader.upload(req.file.path);
@@ -82,7 +78,7 @@ export const updateBlog=async(req:Request,res:Response) =>{
        res.status(500).json({error:'internal server error'})
     }
 }
-//get all blogs
+
 export const getAllBlogs = async (req: Request, res: Response) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   
@@ -109,7 +105,6 @@ export const getAllBlogs = async (req: Request, res: Response) => {
 };
 
 
-// Function to delete a blog by ID
 export const deleteBlog=async (req:Request,res:Response)=> {
   const {blogId}=req.params;
   console.log(blogId)

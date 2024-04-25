@@ -30,16 +30,6 @@ export const verfiyToken = (req:Request,res:Response,next:NextFunction)=>{
         }else{
             (req as any).userdata = decoded
             next()
-
-
         }
-
-        
-
     })
-
-
-
-
-
 }

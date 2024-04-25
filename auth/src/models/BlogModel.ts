@@ -1,19 +1,24 @@
 import mongoose from "mongoose";
-
+import { LikeSchema } from "./like";
+import {commentSchema} from "./comment"
 
 interface BlogModel{
     title:string,
     imageUrl: String ,
     description:string,
+    comment:string,
+    likes:string,
+
     createdAt: { type: Date }
    
 }
 
-const BlogSchema = new mongoose.Schema<BlogModel>({
-    title: {type:String},
+const BlogSchema = new mongoose.Schema({
     imageUrl: {type:String},
-    description: {type:String}
-    
+    title: {type:String},
+    description: {type:String},
+    comment:[commentSchema],
+    likes:[LikeSchema]
    
 
 })
