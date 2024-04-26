@@ -42,7 +42,7 @@ route.post("/register", register)
 
 /**
  * @swagger
- * /login:
+ * /auth/login:
  *   post:
  *     summary: Login user
  *     description: Log in an existing user.

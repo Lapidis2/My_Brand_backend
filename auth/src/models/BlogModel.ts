@@ -8,7 +8,6 @@ interface BlogModel{
     description:string,
     comment:string,
     likes:string,
-
     createdAt: { type: Date }
    
 }

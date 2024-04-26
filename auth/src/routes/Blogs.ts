@@ -1,6 +1,95 @@
+/**
+ *  @openapi
+ * tags:
+ *   name: Blogs
+ *   description: The Blogs managing API 
+ * /blogs:
+ *   get:
+ *     summary: Lists all the blogs
+ *     tags: [Blogs]
+ *     responses:
+ *       200:
+ *         description: All blogs that were posted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Blog'
+ *       403:
+ *         description: Admin privileges needed
+ *   post:
+ *     summary: Creates a blog
+ *     tags: [Blogs]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Blog'
+ *     responses:
+ *       200:
+ *         description: The created Blog
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Blog'
+ *       403:
+ *         description: Admin privileges needed
+ * /updateBlog/{id}:
+ *   patch:
+ *     summary: Update a blog by id
+ *     tags: [Blogs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The Blog id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Blog'
+ *     responses:
+ *       200:
+ *         description: The blog was updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *                 $ref: '#/components/schemas/Blog'
+ *       403:
+ *         description: Admin Privileges needed or The blog was not found
+ * /deleteBlog/{id}:
+ *   delete:
+ *     summary: Remove a blog by id
+ *     tags: [Blogs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The blog id
+ *     responses:
+ *       200:
+ *         description: The blog has been removed
+ *         content:
+ *           application/json:
+ *             schema:
+ *                 $ref: '#/components/schemas/Blog'
+ *       403:
+ *         description: Admin Privileges needed or The blog was not found
+ * 
+ */ 
 import express from "express"
 import { addBlog, deleteBlog,updateBlog,getAllBlogs,getBlogById} from "../controllers/Blog"
-
+import BlogModel from "../models/BlogModel"
+import UserModel from "../models/UserModel"
 import { verfiyToken } from "../middelware/VerifyToken"
     const multer = require('multer')
 const fs = require('fs');
@@ -22,150 +111,58 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const route = express.Router()
-/**
- * @swagger
- * tags:
- *   name: Blogs
- *   description: API endpoints for Blog Posts
- */
 
-/**
- * @swagger
- * /blogs:
- *   get:
- *     summary: Get all blogs
- *     description: Retrieve all blog posts.
- *     tags: [Blogs]
- *     responses:
- *       200:
- *         description: Blog posts retrieved successfully.
- */
 route.get("/" ,getAllBlogs)
 
-/**
- * @swagger
- * /blogs/{id}:
- *   get:
- *     summary: Retrieve a single blog post by ID
- *     description: Retrieve the content and details of a single blog post by providing its ID.
- *     tags: [Blogs]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID of the blog post to retrieve.
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Blog post retrieved successfully.
- *       404:
- *         description: Blog post not found.
- */
+route.get("/blog/:blogId",async (req:any,res:any)=>{
+    const {blogId}= req.params
+    const blog= await BlogModel.findById(blogId)
+    if(!blog){
+        return res.status(401).json({message: "The Blog not found"})
+    }
+    return res.status(200).json({message: "Welcome to the comments", blogId})
+})
 
-route.get("/:blogId", verfiyToken ,getBlogById)
+route.get("/users",async (req:any, res:any) => {
+        const users= await UserModel.find()
+        return res.json(users)
+})
 
-/**
- * @swagger
- * /blogs:
- *   post:
- *     summary: Create a new blog post
- *     description: Create a new blog post
- *     tags: [blogs]
- *     security:
- *       - BearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *        
- *               content:
- *                 type: string
- *               blogImage:
- *                 type: string
- *                 format: binary
- *     responses:
- *       '201':
- *         description: Blog post created successfully
- *       '401':
- *         description: Not authorized
- */
+route.post("/blog/:blogId/:userId",verfiyToken, async (req:any, res:any)=>{
+    const {blogId, userId}= req.params
+    const {commentMsg} = req.body
+    const blog= await BlogModel.findById(blogId) 
+    const user= await UserModel.findById(userId) 
+    if(blog && user){
+        let commentMessage = {
+            userName: user.username, // Assuming the username is stored in the user object
+            comment: commentMsg // The comment message provided by the user
+        };
+    
+        // Update the comment for the blog post with the new comment message
+        blog.comment.push(commentMessage)
+        try{
+            console.log(commentMsg)
+            await blog.save()
+            return res.status(200).json({userName: user["username"],blogTitle: blog["title"], commentMsg: commentMsg})
+
+        }catch(err){
+            return res.status(404).json({Message: "Not Found"})
+        }
+    }
+    return res.status(404).json({message: "User doesnt'exists"})
+    
+})
+route.get("/:blogId" ,getBlogById)
+
 
 
 route.post("/", verfiyToken ,upload.single('image'),addBlog)
 
-/**
- * @swagger
- * /blogs/{blogId}:
- *   put:
- *     summary: Update a blog post
- *     description: Update an existing blog post
- *     tags: [blogs]
- *     security:
- *       - BearerAuth: []
- *     parameters:
- *       - in: path
- *         name: blogId
- *         required: true
- *         schema:
- *           type: string
- *         description: ID of the blog post
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *               content:
- *                 type: string
- *               date:
- *                 type: string
- *               updatedBlogImage:
- *                 type: string
- *                 format: binary
- *     responses:
- *       '200':
- *         description: Blog  updated successfully
- *       '401':
- *         description: Not authorized
- *       '404':
- *         description: Blog post not found
- */
 route.put("/:blogId", verfiyToken ,updateBlog)
 
-/**
- * @swagger
- * /blogs/{blogId}:
- *   delete:
- *     summary: Delete a blog by id
- *     description: Delete an existing blog post
- *     tags: [blogs]
- *     security:
- *       - BearerAuth: []
- *     parameters:
- *       - in: path
- *         name: blogId
- *         required: true
- *         schema:
- *           type: string
- *         description: ID of the blog post
- *     responses:
- *       '200':
- *         description: Blog post deleted successfully
- *       '401':
- *         description: Not authorized
- *       '404':
- *         description: Blog post not found
- */
 route.delete("/:blogId", verfiyToken ,deleteBlog)
+
 
 
 const BlogRoute = module.exports = route

@@ -7,13 +7,48 @@ import CommentRoutes from "./routes/comment"
 import like from "./routes/like"
 import cors from "cors"
 import cloudinary from 'cloudinary';
+
+
+const swaggerjsdoc=require('swagger-jsdoc');
+
+const swaggerui=require("swagger-ui-express");
+
 const app = express()
 dotenv.config();
 const PORT = 5000 
 
+app.use(cors({
+    credentials: true,
+  }));
+
+const options = {
+    definition: {
+      openapi: "3.0.0",
+      info:{
+        title:"MyBrand api doc",
+        version:"0.1",
+        description:"This is swagger documentation for myBrand project."
+      },
+      servers: [{
+        url: "http://localhost:5000/"
+      }]
+    },
+    apis: ["./src/routes/*.ts"]
+  };
+
+  const specs = swaggerjsdoc(options);
+
+  app.use(
+    "/api-docs",
+    swaggerui.serve,
+    swaggerui.setup(specs)
+  );
 
 app.use(cors())
 app.use(express.json())
+app.get("/", (req:any, res:any)=>{
+  return res.status(200).json({message: "Welcome To Hitayezu Site"})
+})
 app.use("/auth", UserRoute)
 app.use("/blogs", BlogRoute)
 
