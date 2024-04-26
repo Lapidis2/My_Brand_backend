@@ -30,7 +30,7 @@ const options = {
         description:"This is swagger documentation for myBrand project."
       },
       servers: [{
-        url: "http://localhost:5000/"
+        url: "https://my-brand-backend-tsc3.onrender.com"
       }]
     },
     apis: ["./src/routes/*.ts"]
