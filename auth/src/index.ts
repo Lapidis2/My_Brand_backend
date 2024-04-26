@@ -9,7 +9,7 @@ import cors from "cors"
 import cloudinary from 'cloudinary';
 const app = express()
 dotenv.config();
-
+const PORT = 5000 
 
 
 app.use(cors())
@@ -17,7 +17,7 @@ app.use(express.json())
 app.use("/auth", UserRoute)
 app.use("/blogs", BlogRoute)
 
-app.listen(5000,()=>{
+app.listen(PORT,()=>{
     mongoose.connect(`${process.env.DATABASE_URL}`).then(()=>{
         console.log("database connected")
     }).catch((error)=>{
