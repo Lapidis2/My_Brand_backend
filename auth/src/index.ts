@@ -17,7 +17,7 @@ app.use(express.json())
 app.use("/auth", UserRoute)
 app.use("/blogs", BlogRoute)
 
-app.listen(PORT,()=>{
+
     mongoose.connect(`${process.env.DATABASE_URL}`).then(()=>{
         console.log("database connected")
     }).catch((error)=>{
@@ -29,5 +29,6 @@ app.listen(PORT,()=>{
         api_key: process.env.CLOUDINERY_API_KEY, 
         api_secret: process.env.CLOUDINERY_SECRET_KEY 
       });
-    console.log("server running on port 5000")
+app.listen(PORT,()=>{
+        console.log("server running on port 5000")
 })
