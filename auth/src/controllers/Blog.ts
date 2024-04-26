@@ -3,7 +3,6 @@ import BlogModel from "../models/BlogModel";
 import {upload} from "../Multer/fileConfig";
 import cloudinary from 'cloudinary'
 export const addBlog= async (req:any, res:any) =>{
-  console.log(req.body)
   try {
 
       const { title, description} = req.body;
