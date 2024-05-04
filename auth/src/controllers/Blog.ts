@@ -49,7 +49,7 @@ export const updateBlog=async(req:Request,res:Response) =>{
         const result = await cloudinary.uploader.upload(req.file.path);
         imageUrl = result.secure_url; 
     }
-    console.log("debugging the issue for updating")
+  
 
     try {
     
