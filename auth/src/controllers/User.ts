@@ -15,7 +15,7 @@ export const register = async (req: Request, res: Response) => {
     if (InsertData) {
       const secrete: any = process.env.JWT_SECRETE;
       const token = jwt.sign({ data: InsertData }, "mysecretekey123", {
-        expiresIn:Infinity,
+        expiresIn: "1 h",
       });
       res.status(201).json({ message: "register successfully", token: token });
     }
