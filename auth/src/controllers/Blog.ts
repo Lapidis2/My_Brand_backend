@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import BlogModel from "../models/BlogModel";
 import {upload} from "../Multer/fileConfig";
 import cloudinary from 'cloudinary'
+import like from "../routes/like";
+
 export const addBlog= async (req:any, res:any) =>{
   try {
 
@@ -72,7 +74,7 @@ export const updateBlog=async(req:Request,res:Response) =>{
     export const getBlogById =async(req:Request,res:Response)=> {
       const {blogId}=req.params;
     try {
-        const blog = await BlogModel.findById(blogId);
+        const blog = await BlogModel.findById(blogId).populate('comment.user').populate('like.user');
         res.send(blog)
     } catch (error) {
         console.error("Error occured while getting blog by ID:", error);
@@ -85,7 +87,7 @@ export const getAllBlogs = async (req: Request, res: Response) => {
   
   try {
       const allBlogs = await BlogModel.find()
-          .select('title description imageUrl')
+          .select('title description imageUrl comment Like')
           .exec();
       if (allBlogs.length >= 1) {
           res.status(200).json({

@@ -23,9 +23,11 @@ export const verfiyToken = (req:Request,res:Response,next:NextFunction)=>{
     jwt.verify(token, "oursecretekey123", (err:any,decoded:any)=>{
         if(err instanceof TokenExpiredError){
             res.json({message:"expired token"})
-        }else if(err instanceof JsonWebTokenError){
+        }
+        else if(err instanceof JsonWebTokenError){
             res.json({message: "invalid token"})
-        }else if(err){
+        }
+        else if(err){
             res.json({message:"something went wrong"})
         }else{
             (req as any).userdata = decoded

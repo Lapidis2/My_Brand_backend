@@ -1,14 +1,23 @@
 
-
 import mongoose from 'mongoose';
 import { title } from 'process';
-import UserModel from "../models/UserModel"
+import UserModel from "./UserModel"
 
 
 export const commentSchema = new mongoose.Schema({
-  userName:  {type:String},
-  comment: {type:String},
-  
+  user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: UserModel,
+      required: true
+  },
+  text: {
+      type: String,
+      required: true
+  },
+  createdAt: {
+      type: Date,
+      default: Date.now
+  }
 });
 
 export const commentModel = mongoose.model('Comment', commentSchema);

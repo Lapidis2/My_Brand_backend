@@ -52,8 +52,9 @@ import express from 'express';
 
 import {getAllComments,createComments} from '../controllers/comment';
 
-const CommentRoutes=(router: express.Router) => {
-  router.get('/commennts',getAllComments);
-  router.post('/createComment/:blogId/user/:userId',createComments);
-};
+
+const route=express.Router()
+  route.get('/Comments',getAllComments);
+  route.post('/createComment/:blogId/user/:userId',createComments);
+const CommentRoutes=module.exports=route
 export default  CommentRoutes;
