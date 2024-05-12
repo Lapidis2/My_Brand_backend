@@ -15,7 +15,7 @@ const swaggerui=require("swagger-ui-express");
 
 const app = express()
 dotenv.config();
-// const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(cors({
     credentials: true,
@@ -66,6 +66,6 @@ app.use("/like", like)
         api_key: process.env.CLOUDINERY_API_KEY, 
         api_secret: process.env.CLOUDINERY_SECRET_KEY 
       });
-// app.listen(PORT,()=>{
-//         console.log("server running on port 5000")
-// })
+app.listen(PORT,()=>{
+        console.log("server running on port 5000")
+})
