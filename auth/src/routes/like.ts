@@ -65,12 +65,10 @@
  *         description: The blog or user was not found
  */ 
 import express from 'express';
+import { LikeABlog } from '../controllers/like';
 
+const router= express.Router()
 
+router.post('/:blogid/user/:userId',LikeABlog);
 
-import { getAllLikes,LikeABlog } from '../controllers/like';
-
-export default (router: express.Router) => {
-    router.get('/like',getAllLikes);
-    router.post('/like/:blogid/user/:userId',LikeABlog);
-  };
+export default router

@@ -7,8 +7,8 @@ interface BlogModel{
     imageUrl: String ,
     description:string,
     comment:string,
-    likes:string,
-    createdAt: { type: Date }
+    createdAt: { type: Date },
+    likes: String
    
 }
 
@@ -17,9 +17,7 @@ const BlogSchema = new mongoose.Schema({
     title: {type:String},
     description: {type:String},
     comment:[commentSchema],
-    likes:[LikeSchema]
-   
-
+    likes: [LikeSchema]
 })
  const BlogModel = module.exports = mongoose.model("Blogs", BlogSchema)
  export default BlogModel

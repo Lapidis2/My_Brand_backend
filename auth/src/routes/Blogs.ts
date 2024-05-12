@@ -113,46 +113,6 @@ const upload = multer({ storage: storage });
 const route = express.Router()
 
 route.get("/" ,getAllBlogs)
-
-route.get("/blog/:blogId",async (req:any,res:any)=>{
-    const {blogId}= req.params
-    const blog= await BlogModel.findById(blogId)
-    if(!blog){
-        return res.status(401).json({message: "The Blog not found"})
-    }
-    return res.status(200).json({message: "Welcome to the comments", blogId})
-})
-
-route.get("/users",async (req:any, res:any) => {
-        const users= await UserModel.find()
-        return res.json(users)
-})
-
-route.post("/blog/:blogId/:userId",verfiyToken, async (req:any, res:any)=>{
-    const {blogId, userId}= req.params
-    const {commentMsg} = req.body
-    const blog= await BlogModel.findById(blogId) 
-    const user= await UserModel.findById(userId) 
-    if(blog && user){
-        let commentMessage = {
-            userName: user.username, // Assuming the username is stored in the user object
-            comment: commentMsg
-        };
-    
-        // Update the comment for the blog post with the new comment message
-        blog.comment.push(commentMessage)
-        try{
-            console.log(commentMsg)
-            await blog.save()
-            return res.status(200).json({userName: user["username"],blogTitle: blog["title"], commentMsg: commentMsg})
-
-        }catch(err){
-            return res.status(404).json({Message: "Not Found"})
-        }
-    }
-    return res.status(404).json({message: "User doesnt'exists"})
-    
-})
 route.get("/:blogId" ,getBlogById)
 
 

@@ -50,11 +50,12 @@
 
 import express from 'express';
 
-import {getAllComments,createComments} from '../controllers/comment';
+import {getAllComments,createComments, deleteComment} from '../controllers/comment';
 
 
 const route=express.Router()
-  route.get('/Comments',getAllComments);
+  route.get('/getComments',getAllComments);
   route.post('/createComment/:blogId/user/:userId',createComments);
+  route.delete("/:_id",deleteComment)
 const CommentRoutes=module.exports=route
 export default  CommentRoutes;

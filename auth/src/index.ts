@@ -51,7 +51,7 @@ app.get("/", (req:any, res:any)=>{
 })
 app.use("/auth", UserRoute)
 app.use("/blogs", BlogRoute)
-app.use("/comments", CommentRoutes)
+app.use("/Comments", CommentRoutes)
 app.use("/like", like)
 
     mongoose.connect(`${process.env.DATABASE_URL}`).then(()=>{

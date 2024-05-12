@@ -6,8 +6,7 @@ import UserModel from "./UserModel"
 
 export const commentSchema = new mongoose.Schema({
   user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: UserModel,
+      type:String,
       required: true
   },
   text: {
@@ -20,7 +19,7 @@ export const commentSchema = new mongoose.Schema({
   }
 });
 
-export const commentModel = mongoose.model('Comment', commentSchema);
+export const commentModel = mongoose.model('Comments', commentSchema);
 
 
 export const getComments = () => commentModel.find();

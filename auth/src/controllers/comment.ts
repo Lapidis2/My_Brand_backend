@@ -1,19 +1,37 @@
 import express from 'express';
 import BlogModel from '../models/BlogModel';
 import UserModel from '../models/UserModel';
+import { commentModel } from '../models/comment';
 import {getBody,getComments,deleteComentById,createComment} from "../models/comment";
 
 export const getAllComments = async (req: express.Request, res: express.Response) => {
     try {
   
-      const blogcomments = await getComments();
-  
-      return res.status(200).json(blogcomments);
-    } catch (error) {
-      console.log(error);
-      return res.sendStatus(400);
+     
+      
+        const blogcomments = await commentModel.find()
+            .select('title description imageUrl comment Like')
+            .exec();
+        if (blogcomments.length >= 1) {
+            res.status(200).json({
+                message: "All Published comments",
+                Comments: blogcomments
+            });
+        } else {
+            res.status(404).json({
+                message: "No Published Blogs Found"
+            });
+        }
+    } catch (err) {
+        console.error("Error:", err);
+        res.status(500).json({
+            message: "Internal Server Error"
+        });
     }
   };
+  
+  
+
 
   export const deleteComment = async (req: express.Request, res: express.Response) => {
     try {
@@ -42,11 +60,26 @@ export const getAllComments = async (req: express.Request, res: express.Response
       if (!blog) {
         return res.status(404).json({message: "no blog with that id"});
     }
-    blog.comment.push({ user:userId, text });
-    await blog.save();
-
-    return res.status(200).json(blog.comment).end();
-    } catch (error) {
+    try{
+      console.log(userId)
+      
+      const user= await UserModel.findById(userId)
+      console.log(user)
+      //@ts-ignore
+       let comment={ user:user?.username, text }
+       blog.comment.push(comment);
+       try{
+        await blog.save();
+        return res.status(200).json(blog.comment).end();
+       }catch(err){
+        console.log(err)
+        return res.send("Check Errors")
+       }
+     
+    }catch{
+      return res.status(404).json({message: "User not Found"})
+    }
+    }catch (error) {
       console.log(error);
       return res.status(400).json(error);
     }
