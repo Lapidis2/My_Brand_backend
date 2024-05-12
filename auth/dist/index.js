@@ -16,7 +16,7 @@ const swaggerjsdoc = require('swagger-jsdoc');
 const swaggerui = require("swagger-ui-express");
 const app = (0, express_1.default)();
 dotenv_1.default.config();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.use((0, cors_1.default)({
     credentials: true,
 }));
