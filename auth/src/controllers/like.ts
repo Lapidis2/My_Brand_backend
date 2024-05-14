@@ -38,7 +38,7 @@ export const LikeABlog = async (req: express.Request, res: express.Response) => 
     }
     blog.likes.push({ user:userId});
     await blog.save();
-
+     
     return res.status(200).json({message: "Liked Blog"}).end();
     } catch (error) {
       console.log(error);
