@@ -69,6 +69,6 @@ import { LikeABlog } from '../controllers/like';
 
 const router= express.Router()
 
-router.post('/:blogid/user/:userId',LikeABlog);
+router.post('/like/:blogid/user/:userId',LikeABlog);
 
 export default router

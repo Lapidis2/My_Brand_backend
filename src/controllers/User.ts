@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import UserModel from "../models/UserModel";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import { Document } from "mongodb";
 export const register = async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
@@ -27,7 +27,10 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const existUser = await UserModel.findOne({ email: email });
+    const existUser = await UserModel.find({ email:email }) as Document;
+    console.log("User found:", existUser); 
+    console.log("User ID:", existUser._id);
+
     if (existUser) {
       const comparedPassword = bcrypt.compareSync(password, existUser.password);
       if (comparedPassword) {
