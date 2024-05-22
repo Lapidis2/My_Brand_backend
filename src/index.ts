@@ -30,7 +30,7 @@ const options = {
         description:"This is swagger documentation for myBrand project."
       },
       servers: [{
-        url: "https://my-brand-backend-tsc3.onrender.com"
+        url: "https://my-brand-backend-1-iuda.onrender.com/"
       }]
     },
     apis: ["./src/routes/*.ts"]
