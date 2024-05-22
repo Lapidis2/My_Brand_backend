@@ -65,7 +65,7 @@ route.post("/register", register)
  *       500:
  *         description: Unauthorized.
  */
-route.post("/login", login)
+route.post("/auth", login)
 
 const UserRoute = module.exports = route
 export default UserRoute
